@@ -60,7 +60,6 @@ class FlightForm extends Component {
 
     let quotes = null;
     let searchData = this.state;
-    console.log(searchData);
     if (this.state.quotes) {
       quotes = this.state.quotes.reduce (function(prev, current) {
         return (prev.MinPrice < current.MinPrice) ? <Quote key={prev.QuoteId} data={prev} searchData={searchData} /> : <Quote key={current.QuoteId} data={current} searchData={searchData} />
