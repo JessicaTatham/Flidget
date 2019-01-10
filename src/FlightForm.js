@@ -59,21 +59,23 @@ class FlightForm extends Component {
     max = max.toISOString().substr(0,10);
 
     let quotes = null;
+    let searchData = this.state;
+    console.log(searchData);
     if (this.state.quotes) {
-      quotes = this.state.quotes.map(q => {
-        return <p>Option {q.QuoteId}: <Quote key={q.QuoteId} data={q} /></p>
-      });
+      quotes = this.state.quotes.reduce (function(prev, current) {
+        return (prev.MinPrice < current.MinPrice) ? <Quote key={prev.QuoteId} data={prev} searchData={searchData} /> : <Quote key={current.QuoteId} data={current} searchData={searchData} />
+      })
     }
 
     let location = null;
     if (this.state.location) {
       const imgUrl = 'https://i.gifer.com/QtRw.gif';
-      location = <div> {this.state.location[1].Name} <img src={imgUrl} width="60" /> {this.state.location[0].Name}</div>
+      location = <h3> {this.state.location[1].Name} <img src={imgUrl} width="90" /> {this.state.location[0].Name}</h3>
     }
 
     return (
       <div>
-        <form onSubmit={this.handleSubmit}>
+        <form className={this.state.quotes ? 'hidden' : ''} onSubmit={this.handleSubmit}>
           <label>
             From:
             <input type="text" name="from" placeholder="Departure Airport Code" value={this.state.from} onChange={this.handleChange} required></input>
@@ -97,9 +99,11 @@ class FlightForm extends Component {
           <input className="button" type="submit" value="Search for flights" ></input>
         </form>
 
-
-        { location }
-        { quotes }
+        <div id="results">
+          { location }
+          { quotes }
+          <button onClick="window.location.reload();">Start Over </button>
+        </div>
 
       </div>
     );

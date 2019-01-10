@@ -38,16 +38,39 @@ h3 {
 	text-align: center;
 }
 
+h2 {
+	font-size: 30px;
+}
+
+.hidden {
+	display: none;
+}
+
+.quote {
+	font-size: 40px !important;
+	border: 5px solid black;
+	border-radius: 4px;
+	text-align: center;
+}
+
+.buyNow {
+	width: 100%;
+	background-color: #3232ff;
+	color: white;
+	padding: 10px;
+	height: 40px;
+}
+
 #HeaderBanner {
 	width: 100%;
 }
 
 @media only screen and (min-width: 1200px) {
-form {
-	width: 50%;
-	padding: 30px;
-	margin-left: 22%;
-}
+	form, #results {
+		width: 50%;
+		padding: 30px;
+		margin-left: 22%;
+	}
 }
 
 
