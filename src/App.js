@@ -6,8 +6,6 @@ import FlightForm from "./FlightForm.js";
 class App extends Component {
 
   render(){
-  	console.log('made it');
-  	console.log(<FlightForm />);
     return(
       <div className="App">
         <FlightForm />

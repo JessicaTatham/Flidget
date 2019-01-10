@@ -1,6 +1,7 @@
 import React, { Component} from "react";
 import {hot} from "react-hot-loader";
 import "./App.css";
+import Quote from './Quote.js';
 
 class FlightForm extends Component {
 
@@ -10,7 +11,8 @@ class FlightForm extends Component {
       from: '',
       to: '',
       depart: '',
-      return: ''
+      return: '',
+      quotes: null
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -25,7 +27,6 @@ class FlightForm extends Component {
   }
 
   handleSubmit(event) {
-    console.log(this.state);
     event.preventDefault();
     let url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/" + "" + this.state.from + "-sky/" + this.state.to + "-sky/" + this.state.depart + "?inboundpartialdate=" + this.state.return;
     fetch(url, {
@@ -35,39 +36,68 @@ class FlightForm extends Component {
       }
     })
     .then(results => {
-      console.log(results.json())
-      return results.json();
+      results.json().then(json => {
+        this.setState({
+          quotes: json.Quotes,
+          location: json.Places
+        })
+        console.log(json);
+      })   
     })
   }
 
 
   render() {
-    var aYearFromNow = new Date();
-    aYearFromNow.setFullYear(aYearFromNow.getFullYear() + 1);
-    return(
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          From:
-          <input type="text" name="from" value={this.state.from} onChange={this.handleChange} required></input>
-        </label>
+    let min = new Date();
+    min = min.toISOString().substr(0,10);
+    let max = new Date();
+    max.setFullYear(max.getFullYear() + 1);
+    max = max.toISOString().substr(0,10);
 
-        <label>
-          To:
-          <input type="text" name="to" value={this.state.to} onChange={this.handleChange} required></input>
-        </label>
+    let quotes = null;
+    if (this.state.quotes) {
+      quotes = this.state.quotes.map(q => {
+        return <p>Option {q.QuoteId}: <Quote key={q.QuoteId} data={q} /></p>
+      });
+    }
 
-        <label>
-          Depart:
-          <input type="date" min={new Date()} max={aYearFromNow} name="depart" value={this.state.depart} onChange={this.handleChange} required></input>
-        </label>
+    let location = null;
+    if (this.state.location) {
+      const imgUrl = 'https://i.gifer.com/QtRw.gif';
+      location = <div> {this.state.location[1].Name} <img src={imgUrl} width="60" /> {this.state.location[0].Name}</div>
+    }
 
-        <label>
-          Return:
-          <input type="date" name="return" value={this.state.return} onChange={this.handleChange} required></input>
-        </label>
+    return (
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <label>
+            From:
+            <input type="text" name="from" value={this.state.from} onChange={this.handleChange} required></input>
+          </label>
 
-        <input type="submit" value="Search for flights" ></input>
-      </form>
+          <label>
+            To:
+            <input type="text" name="to" value={this.state.to} onChange={this.handleChange} required></input>
+          </label>
+
+          <label>
+            Depart:
+            <input type="date" min={min} max={max} name="depart" value={this.state.depart} onChange={this.handleChange} required></input>
+          </label>
+
+          <label>
+            Return:
+            <input type="date" min={this.state.depart} max={max} name="return" value={this.state.return} onChange={this.handleChange} required></input>
+          </label>
+
+          <input type="submit" value="Search for flights" ></input>
+        </form>
+
+
+        { location }
+        { quotes }
+
+      </div>
     );
   }
 }
